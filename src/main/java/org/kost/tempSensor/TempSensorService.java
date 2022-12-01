@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.kost.exceptions.ServiceException;
+import org.kost.tempSensorType.TempSensorTypeEntity;
+import org.kost.tempSensorType.TempSensorTypeRepository;
+import org.kost.tempSensorType.TempSensorTypeService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
@@ -19,6 +22,8 @@ public class TempSensorService {
     private final TempSensorRepository tempSensorRepository;
     private final TempSensorMapper tempSensorMapper;
 
+    private final TempSensorTypeRepository tempSensorTypeRepository;
+
     public List<TempSensor> findAll() {
         return
                 this.tempSensorMapper.toDomainList(tempSensorRepository.findAll().list());
@@ -33,6 +38,9 @@ public class TempSensorService {
     public void save(@Valid TempSensor tempSensor) {
         log.debug("Saving TempSensorType: {}", tempSensor);
         TempSensorEntity entity = tempSensorMapper.toEntity(tempSensor);
+        System.out.println(entity);
+        entity.setTempSensorTypeEntity(tempSensorTypeRepository.findById(tempSensor.tempSensorTypeId));
+        System.out.println(entity);
         tempSensorRepository.persist(entity);
         tempSensorMapper.updateDomainFromEntity(entity, tempSensor);
     }
